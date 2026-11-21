@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>The Passport Page of a Country That Isn't There</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1024px; height: 1024px; }
+  body {
+    background: #2b2f36;
+    background-image: radial-gradient(ellipse at 50% 42%, #3a4048 0%, #2b2f36 55%, #22252a 100%);
+    font-family: "Liberation Serif", "DejaVu Serif", Georgia, serif;
+    position: relative;
+  }
+  /* ---------- open spread ---------- */
+  .spread {
+    position: absolute; left: 32px; top: 202px;
+    width: 960px; height: 620px;
+    display: flex;
+    box-shadow: 0 24px 60px rgba(0,0,0,.55), 0 4px 14px rgba(0,0,0,.45);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .page {
+    width: 480px; height: 620px;
+    background: #f5f0e1;
+    background-image: repeating-radial-gradient(circle at 50% 38%, rgba(31,58,95,0) 0 7px, rgba(31,58,95,.035) 7px 8px);
+    position: relative;
+    padding: 24px 28px;
+    color: #1f3a5f;
+  }
+  .page.left { border-right: 2px solid #c9bfa4; }
+  .watermark {
+    position: absolute; left: 50%; top: 52%;
+    width: 340px; height: 340px;
+    transform: translate(-50%, -50%);
+    opacity: .05; pointer-events: none;
+  }
+  /* ---------- header ---------- */
+  .crest-row { display: flex; align-items: center; gap: 12px; border-bottom: 2px solid #1f3a5f; padding-bottom: 10px; }
+  .crest-row .titles { flex: 1; }
+  .country { font-size: 21px; letter-spacing: 3px; font-weight: bold; color: #1f3a5f; }
+  .country-sub { font-size: 10px; letter-spacing: 2.5px; color: #6b6a5e; margin-top: 3px; }
+  .doc-type { font-size: 12px; letter-spacing: 4px; color: #1f3a5f; margin-top: 5px; font-weight: bold; }
+  .motto { font-size: 9px; letter-spacing: 2px; color: #8a6d2f; font-style: italic; margin-top: 2px; }
+  /* ---------- data page body ---------- */
+  .data-body { display: flex; gap: 18px; margin-top: 16px; }
+  .photo { width: 148px; flex: none; }
+  .photo-frame { border: 2px solid #1f3a5f; padding: 3px; background: #fff; }
+  .fields { flex: 1; }
+  .field { margin-bottom: 7px; }
+  .field .lab {
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    font-size: 7.5px; letter-spacing: 1.6px; color: #7a7568; text-transform: uppercase;
+  }
+  .field .val { font-size: 14.5px; color: #16283f; font-weight: bold; letter-spacing: .4px; }
+  .field .val.small { font-size: 12.5px; }
+  .field-row { display: flex; gap: 14px; }
+  .f-nat { flex: 1.1; } .f-sex { flex: .45; } .f-dob { flex: 1.7; }
+  .f-dob .val { white-space: nowrap; }
+  .sig { margin-top: 12px; }
+  .sig .line { border-bottom: 1px solid #1f3a5f; padding-bottom: 2px; font-size: 17px; font-style: italic; color: #16283f; }
+  .seafarer {
+    position: absolute; left: 96px; top: 288px;
+    transform: rotate(-14deg);
+    border: 2.5px solid rgba(163,51,39,.85); color: rgba(163,51,39,.9);
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    font-size: 11px; font-weight: bold; letter-spacing: 2px;
+    padding: 3px 8px; border-radius: 3px; background: rgba(163,51,39,.06);
+  }
+  /* ---------- MRZ ---------- */
+  .mrz {
+    position: absolute; left: 28px; right: 28px; bottom: 20px;
+    font-family: "Liberation Mono", "DejaVu Sans Mono", monospace;
+    font-size: 12.5px; letter-spacing: 1.4px; color: #16283f;
+    background: rgba(255,255,255,.55);
+    padding: 8px 10px 7px; border-top: 1px solid #b9ad8d; border-bottom: 1px solid #b9ad8d;
+    white-space: nowrap;
+  }
+  .mrz div { line-height: 1.45; }
+  /* ---------- visa page ---------- */
+  .visa-head { border-bottom: 2px solid #1f3a5f; padding-bottom: 8px; display: flex; justify-content: space-between; align-items: baseline; }
+  .visa-head .t { font-size: 17px; letter-spacing: 4px; font-weight: bold; }
+  .visa-head .s { font-size: 9px; letter-spacing: 2px; color: #6b6a5e; }
+  .stamps { margin-top: 18px; display: flex; flex-wrap: wrap; gap: 14px 18px; justify-content: center; }
+  .stamp {
+    width: 196px; height: 66px;
+    border: 2.5px solid currentColor; border-radius: 6px;
+    outline: 1px solid currentColor; outline-offset: 2px;
+    text-align: center; padding: 7px 4px 4px;
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    opacity: .82; mix-blend-mode: multiply;
+  }
+  .stamp.oval { border-radius: 50%; width: 196px; height: 74px; padding-top: 10px; }
+  .stamp.oval .au { font-size: 6px; letter-spacing: 1px; }
+  .stamp .c { font-size: 12px; font-weight: bold; letter-spacing: 2.5px; }
+  .stamp .a { font-size: 9px; letter-spacing: 3px; margin-top: 1px; }
+  .stamp .d { font-size: 13.5px; font-weight: bold; letter-spacing: 1px; margin-top: 2px; }
+  .stamp .au { font-size: 6.5px; letter-spacing: 1.5px; margin-top: 2px; opacity: .85; }
+  .blue { color: #1c4e9d; } .purple { color: #5b3a7a; } .green { color: #2e6b34; }
+  .r1 { transform: rotate(-7deg); } .r2 { transform: rotate(5deg); }
+  .r3 { transform: rotate(8deg); } .r4 { transform: rotate(-6deg); }
+  .r5 { transform: rotate(-4deg); } .r6 { transform: rotate(9deg); }
+  .visa-sticker {
+    position: absolute; left: 28px; right: 28px; bottom: 20px;
+    background: #e9f0e2; border: 2px solid #2e6b34; outline: 1px solid #2e6b34; outline-offset: 2px;
+    padding: 10px 14px 9px; color: #234d2a;
+  }
+  .visa-sticker .t1 { font-size: 13px; font-weight: bold; letter-spacing: 2.5px; }
+  .visa-sticker .t2 { font-size: 10.5px; letter-spacing: 1px; margin-top: 3px; }
+  .visa-sticker .t3 { font-size: 10px; margin-top: 3px; }
+  .visa-sticker .t3 b { letter-spacing: 1px; }
+  .fee {
+    position: absolute; right: 12px; top: -22px;
+    width: 62px; height: 62px; border-radius: 50%;
+    border: 2.5px solid #a33327; color: #a33327;
+    display: flex; align-items: center; justify-content: center; text-align: center;
+    font-family: "Liberation Sans", "DejaVu Sans", Arial, sans-serif;
+    font-size: 11px; font-weight: bold; line-height: 1.25; letter-spacing: .5px;
+    transform: rotate(12deg); background: rgba(245,240,225,.85); opacity: .9;
+  }
+  .note { margin-top: 14px; font-size: 9px; line-height: 1.5; color: #6b6a5e; text-align: center; font-style: italic; }
+</style>
+</head>
+<body>
+<div class="spread">
+
+  <!-- ================= LEFT PAGE : DATA PAGE ================= -->
+  <div class="page left">
+    <svg class="watermark" viewBox="0 0 100 100">
+      <g fill="none" stroke="#1f3a5f" stroke-width="2">
+        <path d="M50 8 L88 26 V58 Q88 84 50 94 Q12 84 12 58 V26 Z"/>
+        <path d="M42 66 V34 h16 V66 M38 66 h24 M44 34 L50 22 L56 34"/>
+        <path d="M30 74 q10 -6 20 0 t20 0 M30 80 q10 -6 20 0 t20 0"/>
+      </g>
+      <g fill="#1f3a5f"><circle cx="50" cy="14" r="1.8"/><circle cx="32" cy="20" r="1.8"/><circle cx="68" cy="20" r="1.8"/></g>
+    </svg>
+
+    <div class="crest-row">
+      <svg width="58" height="70" viewBox="0 0 100 100">
+        <g fill="none" stroke="#1f3a5f" stroke-width="3">
+          <path d="M50 6 L90 25 V58 Q90 86 50 96 Q10 86 10 58 V25 Z"/>
+          <path d="M42 68 V36 h16 V68 M37 68 h26 M44 36 L50 23 L56 36"/>
+          <path d="M28 76 q11 -7 22 0 t22 0 M28 83 q11 -7 22 0 t22 0"/>
+        </g>
+        <g fill="#b08d3e"><circle cx="50" cy="13" r="2.4"/><circle cx="30" cy="20" r="2.4"/><circle cx="70" cy="20" r="2.4"/></g>
+      </svg>
+      <div class="titles">
+        <div class="country">REPUBLIC OF VESKAR</div>
+        <div class="country-sub">LÝÐVELDI VESKARS</div>
+        <div class="doc-type">PASSPORT &nbsp;·&nbsp; FARABRÉF</div>
+        <div class="motto">BY SEA AND STONE &nbsp;·&nbsp; UM SJÓ OG STEIN</div>
+      </div>
+    </div>
+
+    <div class="data-body">
+      <div class="photo">
+        <div class="photo-frame">
+          <!-- flat portrait: Elin Marta Solberg, 36, of Havnestad -->
+          <svg width="138" height="176" viewBox="0 0 138 176">
+            <rect width="138" height="176" fill="#cfd8dc"/>
+            <rect width="138" height="176" fill="none" stroke="#b9c4c9" stroke-width="1"/>
+            <path d="M0 176 V148 Q20 128 44 124 L94 124 Q118 128 138 148 V176 Z" fill="#2f5d5a"/>
+            <path d="M44 124 Q40 138 52 146 L86 146 Q98 138 94 124 Z" fill="#e8c39a"/>
+            <path d="M52 146 L50 158 L88 158 L86 146 Z" fill="#d9b28a"/>
+            <ellipse cx="69" cy="76" rx="30" ry="38" fill="#ecc39c"/>
+            <path d="M39 78 Q34 34 69 30 Q104 34 99 78 Q100 62 92 50 Q84 38 69 38 Q54 38 46 50 Q38 62 39 78 Z" fill="#3a2c22"/>
+            <circle cx="69" cy="34" r="11" fill="#3a2c22"/>
+            <path d="M47 72 q8 -5 16 0 M75 72 q8 -5 16 0" stroke="#3a2c22" stroke-width="2.5" fill="none"/>
+            <ellipse cx="55" cy="82" rx="3.2" ry="2.4" fill="#2b2622"/>
+            <ellipse cx="83" cy="82" rx="3.2" ry="2.4" fill="#2b2622"/>
+            <path d="M69 84 L67 96 Q69 98 71 96" stroke="#c89b72" stroke-width="2" fill="none"/>
+            <path d="M61 106 Q69 110 77 106" stroke="#a34d3f" stroke-width="2.5" fill="none"/>
+            <circle cx="41" cy="92" r="2" fill="#b08d3e"/>
+            <circle cx="97" cy="92" r="2" fill="#b08d3e"/>
+          </svg>
+        </div>
+      </div>
+      <div class="fields">
+        <div class="field-row">
+          <div class="field"><div class="lab">Type / Tegund</div><div class="val">P</div></div>
+          <div class="field"><div class="lab">Code / Land</div><div class="val">VES</div></div>
+          <div class="field"><div class="lab">Passport No. / Númer</div><div class="val">VK847291</div></div>
+        </div>
+        <div class="field"><div class="lab">Surname / Eftirnafn</div><div class="val">SOLBERG</div></div>
+        <div class="field"><div class="lab">Given names / Fornöfn</div><div class="val">ELIN MARTA</div></div>
+        <div class="field-row">
+          <div class="field f-nat"><div class="lab">Nationality / Þjóðerni</div><div class="val small">VESKARI</div></div>
+          <div class="field f-sex"><div class="lab">Sex / Kyn</div><div class="val">F</div></div>
+          <div class="field f-dob"><div class="lab">Date of birth / Fæðing</div><div class="val small">04 JUN 1989</div></div>
+        </div>
+        <div class="field"><div class="lab">Place of birth / Fæðingarstaður</div><div class="val small">HAVNESTAD, VESKAR</div></div>
+        <div class="field-row">
+          <div class="field"><div class="lab">Date of issue / Útgáfa</div><div class="val small">12 MAR 2024</div></div>
+          <div class="field"><div class="lab">Date of expiry / Gildistími</div><div class="val small">12 MAR 2034</div></div>
+        </div>
+        <div class="field"><div class="lab">Authority / Útgefandi</div><div class="val small">MINISTRY OF THE INTERIOR — HAVNESTAD</div></div>
+        <div class="sig">
+          <div class="lab">Holder's signature / Undirskrift</div>
+          <div class="line">Elin Marta Solberg</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="seafarer">SEAFARER</div>
+
+    <div class="mrz">
+      <div>P&lt;VESSOLBERG&lt;&lt;ELIN&lt;MARTA&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</div>
+      <div>VK847291&lt;2VES8906049F3403129SOLBERG890604&lt;62</div>
+    </div>
+  </div>
+
+  <!-- ================= RIGHT PAGE : VISAS & STAMPS ================= -->
+  <div class="page">
+    <svg class="watermark" viewBox="0 0 100 100">
+      <g fill="none" stroke="#1f3a5f" stroke-width="2">
+        <path d="M50 8 L88 26 V58 Q88 84 50 94 Q12 84 12 58 V26 Z"/>
+        <path d="M42 66 V34 h16 V66 M38 66 h24 M44 34 L50 22 L56 34"/>
+        <path d="M30 74 q10 -6 20 0 t20 0 M30 80 q10 -6 20 0 t20 0"/>
+      </g>
+    </svg>
+
+    <div class="visa-head">
+      <div class="t">VISAS</div>
+      <div class="s">ÁRITANIR · P. 2</div>
+    </div>
+
+    <div class="stamps">
+      <div class="stamp blue r1">
+        <div class="c">NORDMARK</div><div class="a">ARRIVAL</div>
+        <div class="d">18 MAY 2025</div><div class="au">PORT AUTHORITY · NORDMARK</div>
+      </div>
+      <div class="stamp blue r2">
+        <div class="c">NORDMARK</div><div class="a">DEPARTURE</div>
+        <div class="d">24 MAY 2025</div><div class="au">PORT AUTHORITY · NORDMARK</div>
+      </div>
+      <div class="stamp purple oval r3">
+        <div class="c">OSTFJORD</div><div class="a">ARRIVAL</div>
+        <div class="d">02 SEP 2025</div><div class="au">BORDER CONTROL · OSTFJORD</div>
+      </div>
+      <div class="stamp purple oval r4">
+        <div class="c">OSTFJORD</div><div class="a">DEPARTURE</div>
+        <div class="d">19 SEP 2025</div><div class="au">BORDER CONTROL · OSTFJORD</div>
+      </div>
+      <div class="stamp green r5">
+        <div class="c">TALVIK</div><div class="a">ARRIVAL</div>
+        <div class="d">21 JAN 2026</div><div class="au">HARBOR OFFICE · TALVIK</div>
+      </div>
+      <div class="stamp green r6">
+        <div class="c">TALVIK</div><div class="a">DEPARTURE</div>
+        <div class="d">05 FEB 2026</div><div class="au">HARBOR OFFICE · TALVIK</div>
+      </div>
+    </div>
+
+    <div class="visa-sticker">
+      <div class="fee">40 KR<br>PAID</div>
+      <div class="t1">SEASONAL CREW VISA</div>
+      <div class="t2">VESKAR FISHING FLEET · FV SÆHRAFN</div>
+      <div class="t3">VALID <b>15 MAY – 30 SEP</b> ONLY · HARBOUR TAX <b>40 KR — PAID</b></div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
